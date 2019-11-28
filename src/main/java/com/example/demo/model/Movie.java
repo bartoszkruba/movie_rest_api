@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.validation.constraint.ValidURLConstraint;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -42,6 +43,7 @@ public class Movie {
     private String description;
 
     @ApiModelProperty("Image URL")
+    @ValidURLConstraint(message = "Invalid URL.")
     private String imageUrl;
 
     @ManyToOne

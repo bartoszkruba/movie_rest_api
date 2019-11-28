@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
@@ -45,7 +46,7 @@ public class MovieController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Create new movie. Available for ADMIN and BASIC users")
     @Secured({Role.BASIC, Role.ADMIN})
-    public Movie createMovie(@RequestBody Movie movie, Principal principal) {
+    public Movie createMovie(@Valid @RequestBody Movie movie, Principal principal) {
         return movieService.createNew(movie, principal.getName());
     }
 
