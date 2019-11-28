@@ -10,6 +10,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -24,12 +28,19 @@ public class Movie {
     @ApiModelProperty("ID")
     private Long id;
 
+    @NotEmpty(message = "Title cannot be empty")
     @ApiModelProperty("Title")
     private String title;
+
+    @Min(value = 0, message = "Value is too low.")
+    @Max(value = 10, message = "Value it too high")
     @ApiModelProperty("Rating")
     private Float rating;
+
+    @Size(min = 10, message = "Description must be at least 10 characters long")
     @ApiModelProperty("Description")
     private String description;
+
     @ApiModelProperty("Image URL")
     private String imageUrl;
 
