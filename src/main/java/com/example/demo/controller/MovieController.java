@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.command.PatchMovieCommand;
-import com.example.demo.command.UpdateOrCreateMovieCommand;
+import com.example.demo.command.movie.PatchMovieCommand;
+import com.example.demo.command.movie.UpdateOrCreateMovieCommand;
 import com.example.demo.model.Movie;
 import com.example.demo.model.Role;
 import com.example.demo.service.MovieService;

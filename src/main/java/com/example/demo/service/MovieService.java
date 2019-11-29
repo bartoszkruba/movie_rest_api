@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.command.PatchMovieCommand;
-import com.example.demo.command.UpdateOrCreateMovieCommand;
+import com.example.demo.command.movie.PatchMovieCommand;
+import com.example.demo.command.movie.UpdateOrCreateMovieCommand;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.Movie;

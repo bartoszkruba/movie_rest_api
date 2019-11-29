@@ -1,9 +1,7 @@
 package com.example.demo.model;
 
-import com.example.demo.command.UpdateOrCreateMovieCommand;
-import com.example.demo.validation.constraint.ValidURLConstraint;
+import com.example.demo.command.movie.UpdateOrCreateMovieCommand;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

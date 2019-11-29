@@ -42,6 +42,6 @@ public class UserAndMovieBootstrap implements CommandLineRunner {
     }
 
     private User addUser(String username, String password, String role) {
-        return userService.registerNewUser(username, password, role);
+        return userService.create(username, password, role);
     }
 }
