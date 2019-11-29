@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.command.PatchMovieCommand;
+import com.example.demo.command.UpdateOrCreateMovieCommand;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.Movie;
@@ -39,18 +41,20 @@ public class MovieService {
         movieRepository.delete(movie);
     }
 
-    public Movie createNew(Movie movie, String username) {
+    public Movie create(UpdateOrCreateMovieCommand movie, String username) {
 
         var user = userRepository.findByUsername(username.toLowerCase()).orElseThrow(UnauthorizedException::new);
-        movie.setCreator(user);
 
-        return movieRepository.save(movie);
+        var created = new Movie(movie);
+        created.setCreator(user);
+        created = movieRepository.save(created);
+        user.getMovies().add(created);
+        return created;
     }
 
-    public Movie update(Long id, Movie movie, String username) {
+    public Movie update(Long id, UpdateOrCreateMovieCommand movie, String username) {
 
-        Movie found = movieRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-
+        var found = movieRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         var user = userRepository.findByUsername(username.toLowerCase()).orElseThrow(UnauthorizedException::new);
 
         if (!user.getUsername().equals(found.getCreator().getUsername()) && !user.getRole().equals(Role.ADMIN))
@@ -60,6 +64,20 @@ public class MovieService {
         found.setRating(movie.getRating());
         found.setDescription(movie.getDescription());
         found.setImageUrl(movie.getImageUrl());
+
+        return movieRepository.save(found);
+    }
+
+    public Movie patch(Long id, PatchMovieCommand movie, String username) {
+        var found = movieRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        var user = userRepository.findByUsername(username.toLowerCase()).orElseThrow(UnauthorizedException::new);
+        if (!user.getUsername().equals(found.getCreator().getUsername()) && !user.getRole().equals(Role.ADMIN))
+            throw new UnauthorizedException();
+
+        if (movie.getTitle() != null) found.setTitle(movie.getTitle());
+        if (movie.getRating() != null) found.setRating(movie.getRating());
+        if (movie.getDescription() != null) found.setDescription(movie.getDescription());
+        if (movie.getImageUrl() != null) found.setImageUrl(movie.getImageUrl());
 
         return movieRepository.save(found);
     }

@@ -20,18 +20,14 @@ public class URLValidator implements ConstraintValidator<ValidURLConstraint, Str
 
     @Override
     public boolean isValid(String field, ConstraintValidatorContext constraintValidatorContext) {
-        String regex = "\\b(https?|ftp|file)://[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|]";
-
+        if (field == null) return true;
+        String regex = "(ftp|http|https)://(\\w+:{0,1}\\w*@)?(\\S+)(:[0-9]+)?(/|/([\\w#!:.?+=&%@!-/]))?";
         return URLValidator.IsMatch(field, regex);
     }
 
-    private static boolean IsMatch(String s, String pattern) {
-        try {
-            Pattern patt = Pattern.compile(pattern);
-            Matcher matcher = patt.matcher(s);
-            return matcher.matches();
-        } catch (RuntimeException e) {
-            return false;
-        }
+    private static boolean IsMatch(String s, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(s);
+        return matcher.matches();
     }
 }

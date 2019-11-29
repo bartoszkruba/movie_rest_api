@@ -26,9 +26,9 @@ public class UserAndMovieBootstrap implements CommandLineRunner {
         var admin = addUser("admin", "password", Role.ADMIN);
         var basic = addUser("user", "password", Role.BASIC);
 
-        addMovie("Godfather", 9.0f, "saddasdsdas", "223231231213", admin);
-        addMovie("Star Wars: New Hope", 8.21f, "asasddsasda", "dsdasdasdas", basic);
-        addMovie("Pulp Fiction", 7.8f, "dsadsadsadsadsa", "dsadasdsa", basic);
+        addMovie("Godfather", 9.0f, "saddasdsdas", "http://www.google.com", admin);
+        addMovie("Star Wars: New Hope", 8.21f, "asasddsasda", "http://www.google.com", basic);
+        addMovie("Pulp Fiction", 7.8f, "dsadsadsadsadsa", "http://www.google.com", basic);
     }
 
     private void addMovie(String title, Float rating, String description, String imageUrl, User creator) {

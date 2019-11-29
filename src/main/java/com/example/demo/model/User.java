@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 @Data
@@ -19,4 +21,8 @@ public class User {
     private String username;
     private String password;
     private String role;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @Builder.Default
+    private Collection<Movie> movies = new ArrayList<>();
 }
