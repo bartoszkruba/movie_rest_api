@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.command.movie.MovieResponseCommand;
 import com.example.demo.command.movie.PatchMovieCommand;
 import com.example.demo.command.movie.UpdateOrCreateMovieCommand;
-import com.example.demo.model.Movie;
 import com.example.demo.model.Role;
 import com.example.demo.service.MovieService;
 import io.swagger.annotations.ApiOperation;
@@ -27,13 +27,13 @@ public class MovieController {
 
     @GetMapping
     @ApiOperation("Fetch all movies. Available for all")
-    public Iterable<Movie> getAll() {
+    public Iterable<MovieResponseCommand> getAll() {
         return movieService.getAll();
     }
 
     @GetMapping("/{id}")
     @ApiOperation("Get movie by id. Available for all")
-    public Movie getById(@PathVariable Long id) {
+    public MovieResponseCommand getById(@PathVariable Long id) {
         return movieService.getById(id);
     }
 
@@ -48,21 +48,21 @@ public class MovieController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Create new movie. Available for ADMIN and BASIC users")
     @Secured({Role.BASIC, Role.ADMIN})
-    public Movie createMovie(@Valid @RequestBody UpdateOrCreateMovieCommand movie, Principal principal) {
+    public MovieResponseCommand createMovie(@Valid @RequestBody UpdateOrCreateMovieCommand movie, Principal principal) {
         return movieService.create(movie, principal.getName());
     }
 
     @PutMapping("/{id}")
     @ApiOperation("Update movie. Available for ADMIN and BASIC users")
     @Secured({Role.BASIC, Role.ADMIN})
-    public Movie update(@PathVariable Long id, @Valid @RequestBody UpdateOrCreateMovieCommand movie, Principal principal) {
+    public MovieResponseCommand update(@PathVariable Long id, @Valid @RequestBody UpdateOrCreateMovieCommand movie, Principal principal) {
         return movieService.update(id, movie, principal.getName());
     }
 
     @PatchMapping("/{id}")
     @ApiOperation("Patch movie. Available for Admin and BASIC users")
     @Secured({Role.BASIC, Role.ADMIN})
-    public Movie patch(@PathVariable Long id, @Valid @RequestBody PatchMovieCommand movie, Principal principal) {
+    public MovieResponseCommand patch(@PathVariable Long id, @Valid @RequestBody PatchMovieCommand movie, Principal principal) {
         return movieService.patch(id, movie, principal.getName());
     }
 

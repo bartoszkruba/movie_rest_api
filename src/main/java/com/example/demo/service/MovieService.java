@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.command.movie.MovieResponseCommand;
 import com.example.demo.command.movie.PatchMovieCommand;
 import com.example.demo.command.movie.UpdateOrCreateMovieCommand;
 import com.example.demo.exception.ResourceNotFoundException;
@@ -10,6 +11,8 @@ import com.example.demo.repository.MovieRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
@@ -23,12 +26,14 @@ public class MovieService {
         this.userRepository = userRepository;
     }
 
-    public Iterable<Movie> getAll() {
-        return movieRepository.findAll();
+    public Iterable<MovieResponseCommand> getAll() {
+        return movieRepository.findAll().stream()
+                .map(MovieResponseCommand::new)
+                .collect(Collectors.toList());
     }
 
-    public Movie getById(Long id) {
-        return movieRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+    public MovieResponseCommand getById(Long id) {
+        return new MovieResponseCommand(movieRepository.findById(id).orElseThrow(ResourceNotFoundException::new));
     }
 
     public void deleteById(Long id, String username) {
@@ -41,7 +46,7 @@ public class MovieService {
         movieRepository.delete(movie);
     }
 
-    public Movie create(UpdateOrCreateMovieCommand movie, String username) {
+    public MovieResponseCommand create(UpdateOrCreateMovieCommand movie, String username) {
 
         var user = userRepository.findByUsername(username.toLowerCase()).orElseThrow(UnauthorizedException::new);
 
@@ -49,10 +54,10 @@ public class MovieService {
         created.setCreator(user);
         created = movieRepository.save(created);
         user.getMovies().add(created);
-        return created;
+        return new MovieResponseCommand(created);
     }
 
-    public Movie update(Long id, UpdateOrCreateMovieCommand movie, String username) {
+    public MovieResponseCommand update(Long id, UpdateOrCreateMovieCommand movie, String username) {
 
         var found = movieRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         var user = userRepository.findByUsername(username.toLowerCase()).orElseThrow(UnauthorizedException::new);
@@ -65,10 +70,10 @@ public class MovieService {
         found.setDescription(movie.getDescription());
         found.setImageUrl(movie.getImageUrl());
 
-        return movieRepository.save(found);
+        return new MovieResponseCommand(movieRepository.save(found));
     }
 
-    public Movie patch(Long id, PatchMovieCommand movie, String username) {
+    public MovieResponseCommand patch(Long id, PatchMovieCommand movie, String username) {
         var found = movieRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         var user = userRepository.findByUsername(username.toLowerCase()).orElseThrow(UnauthorizedException::new);
         if (!user.getUsername().equals(found.getCreator().getUsername()) && !user.getRole().equals(Role.ADMIN))
@@ -79,7 +84,7 @@ public class MovieService {
         if (movie.getDescription() != null) found.setDescription(movie.getDescription());
         if (movie.getImageUrl() != null) found.setImageUrl(movie.getImageUrl());
 
-        return movieRepository.save(found);
+        return new MovieResponseCommand(movieRepository.save(found));
     }
 
     public void deleteAll() {
