@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.command.movie.MovieResponseCommand;
 import com.example.demo.command.movie.PatchMovieCommand;
 import com.example.demo.command.movie.UpdateOrCreateMovieCommand;
+import com.example.demo.model.Movie;
 import com.example.demo.model.Role;
 import com.example.demo.service.MovieService;
 import io.swagger.annotations.ApiOperation;
@@ -25,10 +26,20 @@ public class MovieController {
         this.movieService = movieService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     @ApiOperation("Fetch all movies. Available for all")
     public Iterable<MovieResponseCommand> getAll() {
         return movieService.getAll();
+    }
+
+    @GetMapping
+    @ApiOperation("Find movies page by query")
+    public Iterable<Movie> getByCriteria(@RequestParam(required = false) String title,
+                                         @RequestParam(required = false) Float rating,
+                                         @RequestParam(required = false) String description,
+                                         @RequestParam(required = false) String imageUrl,
+                                         @RequestParam(defaultValue = "0") Integer page) {
+        return movieService.findByCriteria(title, rating, description, imageUrl, page);
     }
 
     @GetMapping("/{id}")

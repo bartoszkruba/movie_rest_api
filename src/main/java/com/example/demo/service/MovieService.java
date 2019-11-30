@@ -10,8 +10,14 @@ import com.example.demo.model.Role;
 import com.example.demo.repository.MovieRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,5 +95,26 @@ public class MovieService {
 
     public void deleteAll() {
         movieRepository.deleteAll();
+    }
+
+    public Iterable<Movie> findByCriteria(String title, Float rating, String description, String imageUrl, Integer page) {
+        Pageable pageRequest = PageRequest.of(page, 10);
+
+        return movieRepository.findAll((Specification<Movie>) (root, criteriaQuery, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (title != null)
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("title"), title)));
+
+            if (rating != null)
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("rating"), rating)));
+
+            if (description != null)
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("description"), description)));
+
+            if (title != null)
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("imageUrl"), imageUrl)));
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        }, pageRequest);
     }
 }
