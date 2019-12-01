@@ -97,7 +97,9 @@ public class MovieService {
         movieRepository.deleteAll();
     }
 
-    public Iterable<Movie> findByCriteria(String title, Float rating, String description, String imageUrl, Integer page) {
+    public Iterable<MovieResponseCommand>
+    findByCriteria(String title, Float minRating, Float maxRating, Integer page) {
+
         Pageable pageRequest = PageRequest.of(page, 10);
 
         return movieRepository.findAll((Specification<Movie>) (root, criteriaQuery, criteriaBuilder) -> {
@@ -105,16 +107,13 @@ public class MovieService {
             if (title != null)
                 predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("title"), title)));
 
-            if (rating != null)
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("rating"), rating)));
+            if (minRating != null)
+                predicates.add(criteriaBuilder.and(criteriaBuilder.greaterThanOrEqualTo(root.get("rating"), minRating)));
 
-            if (description != null)
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("description"), description)));
-
-            if (title != null)
-                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("imageUrl"), imageUrl)));
+            if (maxRating != null)
+                predicates.add(criteriaBuilder.and(criteriaBuilder.lessThanOrEqualTo(root.get("rating"), maxRating)));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-        }, pageRequest);
+        }, pageRequest).map(MovieResponseCommand::new);
     }
 }

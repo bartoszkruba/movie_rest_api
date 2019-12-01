@@ -27,19 +27,19 @@ public class MovieController {
     }
 
     @GetMapping("/all")
-    @ApiOperation("Fetch all movies. Available for all")
+    @ApiOperation("Fetch all movies. Available for ADMIN users.")
+    @Secured({Role.ADMIN})
     public Iterable<MovieResponseCommand> getAll() {
         return movieService.getAll();
     }
 
     @GetMapping
-    @ApiOperation("Find movies page by query")
-    public Iterable<Movie> getByCriteria(@RequestParam(required = false) String title,
-                                         @RequestParam(required = false) Float rating,
-                                         @RequestParam(required = false) String description,
-                                         @RequestParam(required = false) String imageUrl,
-                                         @RequestParam(defaultValue = "0") Integer page) {
-        return movieService.findByCriteria(title, rating, description, imageUrl, page);
+    @ApiOperation("Get movies page by query. Available for all.")
+    public Iterable<MovieResponseCommand> getByCriteria(@RequestParam(required = false) String title,
+                                                        @RequestParam(required = false) Float minRating,
+                                                        @RequestParam(required = false) Float maxRating,
+                                                        @RequestParam(defaultValue = "0") Integer page) {
+        return movieService.findByCriteria(title, minRating, maxRating, page);
     }
 
     @GetMapping("/{id}")
