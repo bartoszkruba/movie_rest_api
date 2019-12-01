@@ -3,10 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.command.movie.MovieResponseCommand;
 import com.example.demo.command.movie.PatchMovieCommand;
 import com.example.demo.command.movie.UpdateOrCreateMovieCommand;
-import com.example.demo.model.Movie;
 import com.example.demo.model.Role;
 import com.example.demo.service.MovieService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -34,12 +34,16 @@ public class MovieController {
     }
 
     @GetMapping
-    @ApiOperation("Get movies page by query. Available for all.")
-    public Iterable<MovieResponseCommand> getByCriteria(@RequestParam(required = false) String title,
-                                                        @RequestParam(required = false) Float minRating,
-                                                        @RequestParam(required = false) Float maxRating,
-                                                        @RequestParam(defaultValue = "0") Integer page) {
-        return movieService.findByCriteria(title, minRating, maxRating, page);
+    @ApiOperation("Query movie page. Available for all.")
+    public Iterable<MovieResponseCommand> getByCriteria(
+            @ApiParam("Movie title.") @RequestParam(required = false) String title,
+            @ApiParam("Lowest Rating.") @RequestParam(required = false) Float minRating,
+            @ApiParam("Highest Rating.") @RequestParam(required = false) Float maxRating,
+            @ApiParam("Page number.") @RequestParam(defaultValue = "0") Integer page,
+            @ApiParam("Sort by which field.") @RequestParam(defaultValue = "title") String sortBy,
+            @ApiParam("Sort descending or ascending.") @RequestParam(defaultValue = "true") Boolean desc) {
+
+        return movieService.findByCriteria(title, minRating, maxRating, page, sortBy, desc);
     }
 
     @GetMapping("/{id}")

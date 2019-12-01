@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.command.movie.MovieResponseCommand;
 import com.example.demo.command.movie.PatchMovieCommand;
 import com.example.demo.command.movie.UpdateOrCreateMovieCommand;
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.Movie;
@@ -11,7 +12,7 @@ import com.example.demo.repository.MovieRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -98,11 +99,19 @@ public class MovieService {
     }
 
     public Iterable<MovieResponseCommand>
-    findByCriteria(String title, Float minRating, Float maxRating, Integer page) {
+    findByCriteria(String title, Float minRating, Float maxRating, Integer page, String sortBy, Boolean descending) {
+        try {
+            return movieRepository.findAll(
+                    createMovieCriteria(title, minRating, maxRating),
+                    createPageRequest(page, sortBy, descending))
+                    .map(MovieResponseCommand::new);
+        } catch (Exception e) {
+            throw new BadRequestException();
+        }
+    }
 
-        Pageable pageRequest = PageRequest.of(page, 10);
-
-        return movieRepository.findAll((Specification<Movie>) (root, criteriaQuery, criteriaBuilder) -> {
+    private Specification<Movie> createMovieCriteria(String title, Float minRating, Float maxRating) {
+        return (Specification<Movie>) (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (title != null)
                 predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("title"), title)));
@@ -114,6 +123,13 @@ public class MovieService {
                 predicates.add(criteriaBuilder.and(criteriaBuilder.lessThanOrEqualTo(root.get("rating"), maxRating)));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
-        }, pageRequest).map(MovieResponseCommand::new);
+        };
+    }
+
+    private PageRequest createPageRequest(Integer page, String sortBy, Boolean descending) {
+        var sort = Sort.by(sortBy);
+        if (descending) sort = sort.descending();
+        else sort = sort.ascending();
+        return PageRequest.of(page, 10, sort);
     }
 }
