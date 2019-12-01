@@ -99,10 +99,11 @@ public class MovieService {
     }
 
     public Iterable<MovieResponseCommand>
-    findByCriteria(String title, Float minRating, Float maxRating, Integer page, String sortBy, Boolean descending) {
+    findByCriteria(String title, Float minRating, Float maxRating, Long creatorId, String creatorUsername,
+                   Integer page, String sortBy, Boolean descending) {
         try {
             return movieRepository.findAll(
-                    createMovieCriteria(title, minRating, maxRating),
+                    createMovieCriteria(title, minRating, maxRating, creatorId, creatorUsername),
                     createPageRequest(page, sortBy, descending))
                     .map(MovieResponseCommand::new);
         } catch (Exception e) {
@@ -110,7 +111,8 @@ public class MovieService {
         }
     }
 
-    private Specification<Movie> createMovieCriteria(String title, Float minRating, Float maxRating) {
+    private Specification<Movie> createMovieCriteria(String title, Float minRating, Float maxRating, Long creatorId,
+                                                     String creatorUsername) {
         return (Specification<Movie>) (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (title != null)
@@ -121,6 +123,13 @@ public class MovieService {
 
             if (maxRating != null)
                 predicates.add(criteriaBuilder.and(criteriaBuilder.lessThanOrEqualTo(root.get("rating"), maxRating)));
+
+            if (creatorId != null)
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("creator").get("id"), creatorId)));
+
+            if (creatorUsername != null)
+                predicates.add(criteriaBuilder.and(criteriaBuilder.equal(root.get("creator").get("username"),
+                        creatorUsername)));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
