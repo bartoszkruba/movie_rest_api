@@ -4,21 +4,25 @@ import com.example.demo.model.Movie;
 import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.repository.MovieRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserAndMovieBootstrap implements CommandLineRunner {
 
     private final MovieRepository movieRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserAndMovieBootstrap(MovieRepository movieRepository, UserService userService) {
+    public UserAndMovieBootstrap(MovieRepository movieRepository, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.movieRepository = movieRepository;
-        this.userService = userService;
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -57,6 +61,11 @@ public class UserAndMovieBootstrap implements CommandLineRunner {
     }
 
     private User addUser(String username, String password, String role) {
-        return userService.create(username, password, role);
+        var user = User.builder()
+                .username(username.toLowerCase())
+                .password(bCryptPasswordEncoder.encode(password))
+                .role(role)
+                .build();
+        return userRepository.save(user);
     }
 }

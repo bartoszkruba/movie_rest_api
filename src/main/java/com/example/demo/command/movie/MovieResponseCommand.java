@@ -2,6 +2,7 @@ package com.example.demo.command.movie;
 
 import com.example.demo.model.Movie;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ApiModel("Movie response")
 public class MovieResponseCommand {
 
     @ApiModelProperty("ID")

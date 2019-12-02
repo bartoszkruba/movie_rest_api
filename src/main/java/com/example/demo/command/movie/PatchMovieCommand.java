@@ -2,6 +2,7 @@ package com.example.demo.command.movie;
 
 import com.example.demo.validation.constraint.ValidURLConstraint;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +16,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ApiModel("Movie patch model")
 public class PatchMovieCommand {
 
     @ApiModelProperty("Title")

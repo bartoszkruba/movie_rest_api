@@ -2,9 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.command.user.PatchUserCommand;
 import com.example.demo.command.user.UpdateOrCreateUserCommand;
+import com.example.demo.command.user.UserResponseCommand;
 import com.example.demo.model.Role;
-import com.example.demo.model.User;
 import com.example.demo.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -15,6 +16,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("api/user")
+@Api("Endpoints for users")
 public class UserController {
 
     private final UserService userService;
@@ -26,34 +28,35 @@ public class UserController {
     @GetMapping
     @ApiOperation("Get all users. Available for ADMIN users.")
     @Secured({Role.ADMIN})
-    public Iterable<User> getAll() {
+    public Iterable<UserResponseCommand> getAll() {
         return userService.getAll();
     }
 
     @GetMapping("/{id}")
     @ApiOperation("Get user by id. Available for all.")
-    public User getById(@PathVariable Long id) {
+    public UserResponseCommand getById(@PathVariable Long id) {
         return userService.getById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("Create new user. Available for all.")
-    public User create(@Valid @RequestBody UpdateOrCreateUserCommand user) {
+    public UserResponseCommand create(@Valid @RequestBody UpdateOrCreateUserCommand user) {
         return userService.create(user);
     }
 
     @PutMapping("/{id}")
     @ApiOperation("Update user. Available for ADMIN and BASIC users.")
     @Secured({Role.ADMIN, Role.BASIC})
-    public User update(@PathVariable Long id, @Valid @RequestBody UpdateOrCreateUserCommand user, Principal principal) {
+    public UserResponseCommand update(@PathVariable Long id, @Valid @RequestBody UpdateOrCreateUserCommand user,
+                                      Principal principal) {
         return userService.update(id, user, principal.getName());
     }
 
     @PatchMapping("/{id}")
     @ApiOperation("Patch user. Available for Admin and BASIC users.")
     @Secured({Role.ADMIN, Role.BASIC})
-    public User patch(@PathVariable Long id, @Valid @RequestBody PatchUserCommand user, Principal principal) {
+    public UserResponseCommand patch(@PathVariable Long id, @Valid @RequestBody PatchUserCommand user, Principal principal) {
         return userService.patch(id, user, principal.getName());
     }
 

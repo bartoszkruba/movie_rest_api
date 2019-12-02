@@ -29,12 +29,10 @@ public class User {
     @Column(unique = true)
     private String username;
 
-    @JsonIgnore
     private String password;
 
     private String role;
 
-    @JsonIgnore
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @Builder.Default
     private Collection<Movie> movies = new ArrayList<>();
