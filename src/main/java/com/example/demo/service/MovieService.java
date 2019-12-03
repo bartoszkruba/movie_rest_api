@@ -105,7 +105,7 @@ public class MovieService {
             return movieRepository.findAll(
                     createMovieCriteria(title, minRating, maxRating, creatorId, creatorUsername),
                     createPageRequest(page, sortBy, descending))
-                    .map(MovieResponseCommand::new);
+                    .map(MovieResponseCommand::new).toList();
         } catch (Exception e) {
             throw new BadRequestException();
         }

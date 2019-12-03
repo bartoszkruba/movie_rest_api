@@ -1,10 +1,10 @@
 package com.example.demo.config.security;
 
-import com.example.demo.model.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
@@ -15,23 +15,25 @@ import java.util.Collection;
 @Builder
 public class MyUserPrincipal implements UserDetails {
 
-    private User user;
+    private String username;
+    private String password;
+    private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         var roles = new ArrayList<GrantedAuthority>();
-        roles.add(new Role(user.getRole()));
+        roles.add(new SimpleGrantedAuthority(role));
         return roles;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return username;
     }
 
     @Override

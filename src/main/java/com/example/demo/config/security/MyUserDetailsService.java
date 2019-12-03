@@ -21,10 +21,15 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByUsername(username.toLowerCase());
-        if (optionalUser.isPresent()) {
-            return MyUserPrincipal.builder().user(optionalUser.get()).build();
-        } else {
-            throw new UsernameNotFoundException(username);
-        }
+        User user;
+
+        if (optionalUser.isPresent()) user = optionalUser.get();
+        else throw new UsernameNotFoundException(username);
+
+        return MyUserPrincipal.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .role(user.getRole())
+                .build();
     }
 }

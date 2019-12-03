@@ -25,6 +25,7 @@ public class UserAndMovieBootstrap implements CommandLineRunner {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+
     @Override
     public void run(String... args) throws Exception {
         var admin = addUser("admin", "password", Role.ADMIN);
@@ -50,6 +51,7 @@ public class UserAndMovieBootstrap implements CommandLineRunner {
         addMovie("The Shining", 8.12f, "asdsddsdsdas", "http://www.google.com", admin);
     }
 
+
     private void addMovie(String title, Float rating, String description, String imageUrl, User creator) {
         movieRepository.save(Movie.builder()
                 .title(title)
@@ -59,6 +61,7 @@ public class UserAndMovieBootstrap implements CommandLineRunner {
                 .creator(creator)
                 .build());
     }
+
 
     private User addUser(String username, String password, String role) {
         var user = User.builder()
