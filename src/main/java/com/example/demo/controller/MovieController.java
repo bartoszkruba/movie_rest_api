@@ -41,15 +41,15 @@ public class MovieController {
     @ApiOperation("Query movie page. Available for all.")
     public Iterable<MovieResponseCommand> getByCriteria(
 
-            @ApiParam(value = "Movie title.", allowEmptyValue = true)
+            @ApiParam(value = "Movie title.")
             @RequestParam(required = false)
                     String title,
 
-            @ApiParam(value = "Lowest Rating.", allowEmptyValue = true, example = "0")
+            @ApiParam(value = "Lowest Rating.", example = "0")
             @RequestParam(required = false)
                     Float minRating,
 
-            @ApiParam(value = "Highest Rating.", allowEmptyValue = true, example = "10")
+            @ApiParam(value = "Highest Rating.", example = "10")
             @RequestParam(required = false)
                     Float maxRating,
 
@@ -65,11 +65,11 @@ public class MovieController {
             @RequestParam(defaultValue = "true")
                     Boolean desc,
 
-            @ApiParam(value = "Creators ID.", allowEmptyValue = true, example = "1")
+            @ApiParam(value = "Creators ID.", example = "1")
             @RequestParam(required = false)
                     Long creatorId,
 
-            @ApiParam(value = "Creators username.", allowEmptyValue = true)
+            @ApiParam(value = "Creators username.")
             @RequestParam(required = false)
                     String creatorUsername) {
 
